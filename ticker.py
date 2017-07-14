@@ -304,6 +304,7 @@ class IndexFormatter(Formatter):
     """
     Format the position x to the nearest i-th label where i=int(x+0.5)
     """
+
     def __init__(self, labels):
         self.labels = labels
         self.n = len(labels)
@@ -326,6 +327,7 @@ class NullFormatter(Formatter):
     """
     Always return the empty string.
     """
+
     def __call__(self, x, pos=None):
         """
         Returns an empty string for all inputs.
@@ -338,6 +340,7 @@ class FixedFormatter(Formatter):
     Return fixed strings for tick labels based only on position, not
     value.
     """
+
     def __init__(self, seq):
         """
         Set the sequence of strings that will be used for labels.
@@ -374,6 +377,7 @@ class FuncFormatter(Formatter):
     position ``pos``), and return a string containing the corresponding
     tick label.
     """
+
     def __init__(self, func):
         self.func = func
 
@@ -393,6 +397,7 @@ class FormatStrFormatter(Formatter):
     The format string should have a single variable format (%) in it.
     It will be applied to the value (not the position) of the tick.
     """
+
     def __init__(self, fmt):
         self.fmt = fmt
 
@@ -413,6 +418,7 @@ class StrMethodFormatter(Formatter):
     The field used for the value must be labeled `x` and the field used
     for the position must be labeled `pos`.
     """
+
     def __init__(self, fmt):
         self.fmt = fmt
 
@@ -447,8 +453,8 @@ class OldScalarFormatter(Formatter):
         """
         Formats the value `x` based on the size of the axis range `d`.
         """
-        #if the number is not too big and it's an int, format it as an
-        #int
+        # if the number is not too big and it's an int, format it as an
+        # int
         if abs(x) < 1e4 and x == int(x):
             return '%d' % x
 
@@ -465,7 +471,7 @@ class OldScalarFormatter(Formatter):
         else:
             fmt = '%1.3f'
         s = fmt % x
-        #print d, x, fmt, s
+        # print d, x, fmt, s
         tup = s.split('e')
         if len(tup) == 2:
             mantissa = tup[0].rstrip('0').rstrip('.')
@@ -489,6 +495,7 @@ class ScalarFormatter(Formatter):
     using ``set_powerlimits((n,m))``. The defaults for these are
     controlled by the ``axes.formatter.limits`` rc parameter.
     """
+
     def __init__(self, useOffset=None, useMathText=None, useLocale=None):
         # useOffset allows plotting small data ranges with large offsets: for
         # example: [1+1e-9,1+2e-9,1+3e-9] useMathText will render the offset
@@ -684,7 +691,7 @@ class ScalarFormatter(Formatter):
         # Only use offset if it saves at least _offset_threshold digits.
         n = self._offset_threshold - 1
         self.offset = (sign * (abs_max // 10 ** oom) * 10 ** oom
-                       if abs_max // 10 ** oom >= 10**n
+                       if abs_max // 10 ** oom >= 10 ** n
                        else 0)
 
     def _set_orderOfMagnitude(self, range):
@@ -845,6 +852,7 @@ class LogFormatter(Formatter):
     decades, use ``minor_thresholds=(1.5, 1.5)``.
 
     """
+
     def __init__(self, base=10.0, labelOnlyBase=False,
                  minor_thresholds=None,
                  linthresh=None):
@@ -935,7 +943,7 @@ class LogFormatter(Formatter):
             # Add labels between bases at log-spaced coefficients;
             # include base powers in case the locations include
             # "major" and "minor" points, as in colorbar.
-            c = np.logspace(0, 1, int(b)//2 + 1, base=b)
+            c = np.logspace(0, 1, int(b) // 2 + 1, base=b)
             self._sublabels = set(np.round(c))
             # For base 10, this yields (1, 2, 3, 4, 6, 10).
         else:
@@ -991,8 +999,8 @@ class LogFormatter(Formatter):
         return '%-12g' % value
 
     def pprint_val(self, x, d):
-        #if the number is not too big and it's an int, format it as an
-        #int
+        # if the number is not too big and it's an int, format it as an
+        # int
         if abs(x) < 1e4 and x == int(x):
             return '%d' % x
 
@@ -1027,6 +1035,7 @@ class LogFormatterExponent(LogFormatter):
     """
     Format values for log axis using ``exponent = log_base(value)``.
     """
+
     def _num_to_string(self, x, vmin, vmax):
         fx = math.log(x) / math.log(self._base)
         if abs(fx) > 10000:
@@ -1123,6 +1132,7 @@ class LogitFormatter(Formatter):
     """
     Probability formatter (using Math text).
     """
+
     def __call__(self, x, pos=None):
         s = ''
         if 0.01 <= x <= 0.99:
@@ -1133,10 +1143,10 @@ class LogitFormatter(Formatter):
             else:
                 s = '${:.5f}$'.format(x)
         else:  # x > 0.99
-            if is_decade(1-x):
-                s = '$1-10^{{{:.0f}}}$'.format(np.log10(1-x))
+            if is_decade(1 - x):
+                s = '$1-10^{{{:.0f}}}$'.format(np.log10(1 - x))
             else:
-                s = '$1-{:.5f}$'.format(1-x)
+                s = '$1-{:.5f}$'.format(1 - x)
         return s
 
     def format_data_short(self, value):
@@ -1349,6 +1359,7 @@ class IndexLocator(Locator):
     index plotting; i.e., the axis is 0, len(data).  This is mainly
     useful for x ticks.
     """
+
     def __init__(self, base, offset):
         'place ticks on the i-th data points where (i-offset)%base==0'
         self._base = base
@@ -1447,6 +1458,7 @@ class LinearLocator(Locator):
     be nice
 
     """
+
     def __init__(self, numticks=None, presets=None):
         """
         Use presets to set locs based on lom.  A dict mapping vmin, vmax->locs
@@ -1501,10 +1513,10 @@ class LinearLocator(Locator):
 
         if rcParams['axes.autolimit_mode'] == 'round_numbers':
             exponent, remainder = _divmod(math.log10(vmax - vmin),
-                                          math.log10(max([self.numticks-1, 1])))
+                                          math.log10(max([self.numticks - 1, 1])))
             if remainder < 0.5:
                 exponent -= 1
-            scale = max([self.numticks-1, 1]) ** (-exponent)
+            scale = max([self.numticks - 1, 1]) ** (-exponent)
             vmin = math.floor(scale * vmin) / scale
             vmax = math.ceil(scale * vmax) / scale
 
@@ -1520,6 +1532,7 @@ def closeto(x, y):
 
 class Base(object):
     'this solution has some hacks to deal with floating point inaccuracies'
+
     def __init__(self, base):
         if base <= 0:
             raise ValueError("'base' must be positive")
@@ -1536,7 +1549,7 @@ class Base(object):
         'return the largest multiple of base <= x'
         d, m = _divmod(x, self._base)
         if closeto(m / self._base, 1):  # was closeto(m, self._base)
-            #looks like floating point error
+            # looks like floating point error
             return (d + 1) * self._base
         return d * self._base
 
@@ -1544,7 +1557,7 @@ class Base(object):
         'return the smallest multiple of base > x'
         d, m = _divmod(x, self._base)
         if closeto(m / self._base, 1):
-            #looks like floating point error
+            # looks like floating point error
             return (d + 2) * self._base
         return (d + 1) * self._base
 
@@ -1750,10 +1763,12 @@ class MaxNLocator(Locator):
             igood = (steps < 1) | (np.abs(steps - np.round(steps)) < 0.001)
             steps = steps[igood]
 
-        #Neil's suggestion
-        # istep = np.nonzero(steps >= raw_step)[0][0]
-        istep = np.nonzero(steps >= raw_step)[0]
-        print(istep)
+        # check dimension before selecting first element
+        arr_dim = np.nonzero(steps >= raw_step).ndim
+        if arr_dim == 1:
+            istep = np.nonzero(steps >= raw_step)[0]
+        elif arr_dim == 2:
+            istep = np.nonzero(steps >= raw_step)[0][0]
 
         # Classic round_numbers mode may require a larger step.
         if rcParams['axes.autolimit_mode'] == 'round_numbers':
@@ -2262,25 +2277,25 @@ class LogitLocator(Locator):
             ticklocs = []
             if (decade_min <= -1):
                 expo = np.arange(decade_min, min(0, decade_max + 1))
-                ticklocs.extend(list(10**expo))
+                ticklocs.extend(list(10 ** expo))
             if (decade_min <= 0) and (decade_max >= 0):
                 ticklocs.append(0.5)
             if (decade_max >= 1):
                 expo = -np.arange(max(1, decade_min), decade_max + 1)
-                ticklocs.extend(list(1 - 10**expo))
+                ticklocs.extend(list(1 - 10 ** expo))
 
         # minor ticks
         else:
             ticklocs = []
             if (decade_min <= -2):
                 expo = np.arange(decade_min, min(-1, decade_max))
-                newticks = np.outer(np.arange(2, 10), 10**expo).ravel()
+                newticks = np.outer(np.arange(2, 10), 10 ** expo).ravel()
                 ticklocs.extend(list(newticks))
             if (decade_min <= 0) and (decade_max >= 0):
                 ticklocs.extend([0.2, 0.3, 0.4, 0.6, 0.7, 0.8])
             if (decade_max >= 2):
                 expo = -np.arange(max(2, decade_min), decade_max + 1)
-                newticks = 1 - np.outer(np.arange(2, 10), 10**expo).ravel()
+                newticks = 1 - np.outer(np.arange(2, 10), 10 ** expo).ravel()
                 ticklocs.extend(list(newticks))
 
         return self.raise_if_exceeds(np.array(ticklocs))
@@ -2333,6 +2348,7 @@ class AutoMinorLocator(Locator):
     major ticks. Assumes the scale is linear and major ticks are
     evenly spaced.
     """
+
     def __init__(self, n=None):
         """
         *n* is the number of subdivisions of the interval between
@@ -2397,6 +2413,7 @@ class OldAutoLocator(Locator):
     view limits and the tick locs.
 
     """
+
     def __init__(self):
         self._locator = LinearLocator()
 
@@ -2438,8 +2455,8 @@ class OldAutoLocator(Locator):
             fld = math.floor(ld)
             base = 10 ** fld
 
-            #if ld==fld:  base = 10**(fld-1)
-            #else:        base = 10**fld
+            # if ld==fld:  base = 10**(fld-1)
+            # else:        base = 10**fld
 
             if d >= 5 * base:
                 ticksize = base
