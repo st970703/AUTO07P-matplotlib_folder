@@ -4,7 +4,7 @@ There was an error when plotting with auto07p.<br />
 The error appeared when trying to zoom in the graph.<br />
 The graph would remain unchanged and unable to be zoomed in.<br />
 
-### deatils of the inder error:<br />
+### deatils of the index error:<br />
 ```
 File "/usr/lib/python3/dist-packages/matplotlib/ticker.py", line 1761, in _raw_ticks<br />
     istep = np.nonzero(steps >= raw_step)[0][0]<br />
